@@ -25,10 +25,10 @@ async function main() {
         })
         
         
-        conn.on('error', (error) => {
+        conn.on('error', async(error) => {
             conn.end()
             console.log('Connection to server closed unexpectedly. Attempting to reestablish connection...')
-            swarm.listen()
+            await swarm.listen()
         })
        
         conn.write(`
@@ -48,7 +48,7 @@ async function main() {
     const topic = Buffer.alloc(32).fill(key) // A topic must be 32 bytes
     const discovery = swarm.join(topic, { server: false, client: true })
     await discovery.flushed() // Waits for the topic to be fully announced on the DHT
-    console.log("Swarm with key: " + key + " successfully created")
+    console.log("Listening for peer...")
   
 
     
