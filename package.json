@@ -11,6 +11,7 @@
   "dependencies": {
     "hyperswarm": "^3.0.4",
     "hyperswarm-web": "^2.2.0",
+    "node-fetch": "^2.6.7",
     "prompt-sync": "^4.2.0"
   }
 }
