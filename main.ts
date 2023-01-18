@@ -1,9 +1,8 @@
 const Hyperswarm = require('hyperswarm')
 const prompt = require('prompt-sync')({sigint: true});
-const fetch = require('node-fetch')
 
 // Call the server on port 3000 to create a server swarm with the given key
-async function init(key) {
+async function init(key : string) {
     await fetch(`http://localhost:3000/api/swarm?key=${key}`, {
     method: 'POST',
     headers: {
@@ -11,14 +10,15 @@ async function init(key) {
         'Content-Type': 'application/json'
     },
     })
-
+    .then(response => response.json())
+    .then(response => console.log(JSON.stringify(response)))
 }
 
-async function main() {
+async function start() {
     var valid = false
-    var key
+    var key : string = ''
     const type = "code"
-    const body = "print(\'Hello World! My name is testnet!\')"
+    const body = "print(\'Hello World! My name is testnet\')"
     const id = 12
 
     while (!valid) {
@@ -28,18 +28,19 @@ async function main() {
     }
 
     
-    const swarm = new Hyperswarm()
+    const swarm = new Hyperswarm({maxPeers: 1})
 
-    swarm.on('connection', (conn, info) => {
-        conn.on('data', data => {
-            conn.on('data', data => console.log('Server Message:', data.toString()))
+    swarm.on('connection', (conn : any, info : any) => {
+        conn.on('data', (data : any) => {
+           console.log('Server Message:', data.toString())
         })
         
         
-        conn.on('error', async(error) => {
+        conn.on('error', async(error : any) => {
             conn.end()
             // On sudden disconnect, wait for server
             console.log('Connection to server closed unexpectedly. Attempting to reestablish connection...')
+            await init(key) // call the server again to recreate an endpoint
             await swarm.listen()
         })
        
@@ -64,6 +65,5 @@ async function main() {
     await discovery.flushed() // Waits for the topic to be fully announced on the DHT
     console.log("Listening for peer...")
 }
-main()
 
-
+export { start }
