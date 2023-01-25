@@ -11,14 +11,14 @@ async function init(key) {
         'Content-Type': 'application/json'
     },
     })
-
+   
 }
 
 async function main() {
     var valid = false
     var key
     const type = "code"
-    const body = "print(\'Hello World! My name is testnet!\')"
+    const body = "print(\'Hello World! My name is testnet\')"
     const id = 12
 
     while (!valid) {
